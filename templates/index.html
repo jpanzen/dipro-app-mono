@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSULab</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+</head>
+<body class="bg-dark text-white font-nunito text-[16px]">
+
+    <!--NAVIGACE-->
+    <nav class="flex flex-col md:flex-row justify-between items-center border-b border-white10 fixed bg-dark w-full z-50 py-4 px-[40px]">
+        <div class="md:hidden flex self-end w-full justify-end">
+            <button id="menu-button" class="text-gray focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <ul id="menu" class="hidden md:flex md:gap-5 text-gray md:items-center">
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#experimenty"><li>Experimenty</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#technologie"><li>Technologie</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
+        </ul>
+        <a class="hover:text-white hidden md:flex py-[2px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
+        <ul id="mobile-menu" class="hidden flex flex-col items-start self-start gap-4 py-[20px] text-gray bg-dark md:hidden">
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#experimenty"><li>Experimenty</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#technologie"><li>Technologie</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
+            <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
+        </ul>
+    </nav>
+
+    <div class="pt-[100px] gap-[40px]">
+        <!--SVĚTELNÉ ČIDLO-->
+        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="about-me">
+            <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
+                <div class="flex flex-col gap-[10px]">
+                    <h2 class="text-[24px]">Světelné čidlo</h2>
+                    <p>Stručný popis experimentu</p>
+                </div>
+                <canvas id="light-sensor-chart" width="400" height="200"></canvas>
+                <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/svetelne-cidlo">O experimentu</a>
+            </div>
+        </div>
+
+        <!--ZÁVISLOST NAPĚTÍ FOTODIODY-->
+        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="about-me">
+            <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
+                <div class="flex flex-col gap-[10px]">
+                    <h2 class="text-[24px]">Závislost napětí fotodiody</h2>
+                    <p>Stručný popis experimentu</p>
+                </div>
+                <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/svetelne-cidlo">O experimentu</a>
+            </div>
+        </div>
+
+        <!--SÉRIOVÉ RELÉ-->
+        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="about-me">
+            <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
+                <div class="flex flex-col gap-[10px]">
+                    <h2 class="text-[24px]">Sériové relé</h2>
+                    <p>Stručný popis experimentu</p>
+                </div>
+                <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/svetelne-cidlo">O experimentu</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('light-sensor-chart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // časové osy
+                datasets: [{
+                    label: 'Napětí [mV]',
+                    data: [], // tvoje data
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 5 // Předpokládáme, že maximální napětí je 5V
+                    }
+                }
+            }
+        });
+
+        const socket = io('http://127.0.0.1:5000'); // Změň URL na odpovídající adresu tvého serveru
+
+        socket.on('connect', function() {
+            console.log('Connected to server');
+        });
+
+        socket.on('data', function(data) {
+            console.log('Received data:', data);
+
+            // Přidání nových dat do grafu
+            myChart.data.labels.push(new Date());
+            myChart.data.datasets[0].data.push(data.voltage);
+            myChart.update();
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected from server');
+        });
+    </script>
+</body>
+</html>
