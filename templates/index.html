@@ -48,122 +48,166 @@
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
-                <div id="current-values">
-                    <p>Uin: <span id="uin-value">-</span> V</p>
-                    <p>Uout: <span id="uout-value">-</span> V</p>
-                    <p>Proud 1: <span id="proud1-value">-</span> A</p>
-                    <p>Proud 2: <span id="proud2-value">-</span> A</p>
-                </div>
+                    <div id="current-values">
+                        <p>Uin: <span id="uin-value">-</span> V</p>
+                        <p>Uout: <span id="uout-value">-</span> V</p>
+                        <p>Proud 1: <span id="proud1-value">-</span> A</p>
+                        <p>Proud 2: <span id="proud2-value">-</span> A</p>
+                        <p>Závity: <span id="coil">200</span></p>
+                        <p>Zátěž: <span id="load">R0</span></p>
+                    </div>
+                    <div class="flex flex-col gap-[20px]">
+                        <div class="flex flex-row gap-0">
+                            <button onclick="setState(1)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">200z</button>
+                            <button onclick="setState(2)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">400z</button>
+                            <button onclick="setState(3)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">600z</button>
+                        </div>
+                        <div class="flex flex-row gap-0">
+                            <button onclick="setState(4)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">R0</button>
+                            <button onclick="setState(5)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R1</button>
+                            <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2</button>
+                            <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3</button>
+                        </div>
+                        <div class="flex flex-row gap-0">
+                            <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
+                            <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
+                        </div>
+                    </div>
                 <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/svetelne-cidlo">O experimentu</a>
             </div>
         </div>
     </div>
 
-    <script>
-        const ctx = document.getElementById('light-sensor-chart').getContext('2d');
-        const maxDataPoints = 50; // Maximální počet bodů v grafu
-        const myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Uin [V]',
-                    data: [],
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    pointRadius: 0
-                }, {
-                    label: 'Uout [V]',
-                    data: [],
-                    borderColor: 'rgba(192, 75, 75, 1)',
-                    borderWidth: 1,
-                    pointRadius: 0
-                }, {
-                    label: 'Proud 1 [A]',
-                    data: [],
-                    borderColor: 'rgba(75, 75, 192, 1)',
-                    borderWidth: 1,
-                    pointRadius: 0
-                }, {
-                    label: 'Proud 2 [A]',
-                    data: [],
-                    borderColor: 'rgba(192, 192, 75, 1)',
-                    borderWidth: 1,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'second'
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                animation: false
-            }
-        });
-    
-        const socket = io('http://127.0.0.1:5000');
-    
-        socket.on('connect', function() {
-            console.log('Connected to server');
-        });
-    
-        let startTime = Date.now();
-    
-        socket.on('data', function(data) {
-    
-            const now = Date.now();
-            const elapsedTime = (now - startTime) / 1000; // Čas v sekundách
-    
-            myChart.data.labels.push(now);
-            myChart.data.datasets[0].data.push({x: now, y: data.Uin});
-            myChart.data.datasets[1].data.push({x: now, y: data.Uout});
-            myChart.data.datasets[2].data.push({x: now, y: data.proud1});
-            myChart.data.datasets[3].data.push({x: now, y: data.proud2});
-    
-            // Omezení počtu bodů v grafu
-            if (myChart.data.labels.length > maxDataPoints) {
-                myChart.data.labels.shift();
-                myChart.data.datasets.forEach(dataset => dataset.data.shift());
-            }
-    
-            // Nastavení rozsahu osy x
-            const oldestDataPoint = myChart.data.labels[0];
-            myChart.options.scales.x.min = oldestDataPoint;
-            myChart.options.scales.x.max = now;
-    
-            myChart.update();
-    
-            // Aktualizace aktuálních hodnot
-            document.getElementById('uin-value').textContent = data.Uin.toFixed(2);
-            document.getElementById('uout-value').textContent = data.Uout.toFixed(2);
-            document.getElementById('proud1-value').textContent = data.proud1.toFixed(2);
-            document.getElementById('proud2-value').textContent = data.proud2.toFixed(2);
-        });
+<script>
+const ctx = document.getElementById('light-sensor-chart').getContext('2d');
+const maxDataPoints = 50; // Maximální počet bodů v grafu
+let isPaused = false;
 
-        const switchButtons = document.querySelectorAll('.switch-btn');
-        switchButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const switchNumber = this.getAttribute('data-switch');
-                console.log('Sending switch command:', switchNumber);
-                socket.emit('switch', switchNumber);
-            });
-        });
-    
-        socket.on('disconnect', function() {
-            console.log('Disconnected from server');
-        });
-    </script>
+const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Uin [V]',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            pointRadius: 0,
+            cubicInterpolationMode: 'monotone',
+        }, {
+            label: 'Uout [V]',
+            data: [],
+            borderColor: 'rgba(192, 75, 75, 1)',
+            borderWidth: 1,
+            pointRadius: 0,
+            cubicInterpolationMode: 'monotone'
+        }, {
+            label: 'Proud 1 [A]',
+            data: [],
+            borderColor: 'rgba(75, 75, 192, 1)',
+            borderWidth: 1,
+            pointRadius: 0,
+            cubicInterpolationMode: 'monotone'
+        }, {
+            label: 'Proud 2 [A]',
+            data: [],
+            borderColor: 'rgba(192, 192, 75, 1)',
+            borderWidth: 1,
+            pointRadius: 0,
+            cubicInterpolationMode: 'monotone'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'second'
+                },
+                ticks: {
+                    maxTicksLimit: 10
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        },
+        animation: false
+    }
+});
+
+const socket = io('http://127.0.0.1:5000');
+
+socket.on('connect', function() {
+    console.log('Connected to server');
+});
+
+let startTime = Date.now();
+
+socket.on('data', function(data) {
+    if(!isPaused){
+        const now = Date.now();
+        const elapsedTime = (now - startTime) / 1000; // Čas v sekundách
+
+        myChart.data.labels.push(now);
+        myChart.data.datasets[0].data.push({x: now, y: data.Uin});
+        myChart.data.datasets[1].data.push({x: now, y: data.Uout});
+        myChart.data.datasets[2].data.push({x: now, y: data.proud1});
+        myChart.data.datasets[3].data.push({x: now, y: data.proud2});
+
+        // Omezení počtu bodů v grafu
+        if (myChart.data.labels.length > maxDataPoints) {
+            myChart.data.labels.shift();
+            myChart.data.datasets.forEach(dataset => dataset.data.shift());
+        }
+
+        // Nastavení rozsahu osy x
+        const oldestDataPoint = myChart.data.labels[0];
+        myChart.options.scales.x.min = oldestDataPoint;
+        myChart.options.scales.x.max = now;
+
+        myChart.update();
+
+        // Aktualizace aktuálních hodnot
+        document.getElementById('uin-value').textContent = data.Uin.toFixed(2);
+        document.getElementById('uout-value').textContent = data.Uout.toFixed(2);
+        document.getElementById('proud1-value').textContent = data.proud1.toFixed(2);
+        document.getElementById('proud2-value').textContent = data.proud2.toFixed(2);
+    }
+});
+
+document.getElementById('pause-btn').addEventListener('click', function() {
+    isPaused = true;
+    this.style.display = 'none';
+    document.getElementById('play-btn').style.display = 'inline';
+});
+
+document.getElementById('play-btn').addEventListener('click', function() {
+    isPaused = false;
+    this.style.display = 'none';
+    document.getElementById('pause-btn').style.display = 'inline';
+});
+
+function setState(state) {
+    console.log('Sending state:', state);
+    socket.emit('send_data', { data: state });
+    switch (state) {
+        case 1:document.getElementById("coil").textContent="200";break;
+        case 2:document.getElementById("coil").textContent="400";break;
+        case 3:document.getElementById("coil").textContent="600";break;
+        case 4:document.getElementById("load").textContent="R0";break;
+        case 5:document.getElementById("load").textContent="R1";break;
+        case 6:document.getElementById("load").textContent="R2";break;
+        case 7:document.getElementById("load").textContent="R3";break;
+        default: console.log("Necekany vstup pro zmenu dat");break;
+    }
+}
+
+socket.on('disconnect', function() {
+    console.log('Disconnected from server');
+});
+</script>
 </body>
 </html>

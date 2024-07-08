@@ -37,6 +37,12 @@ def parse_data(data):
         print(f"Error parsing data: {data}")
         return None
 
+@socketio.on('send_data')
+def handle_send_data(json):
+    data = json.get('data')
+    if data:
+        ser.write(f"{data}\n".encode('utf-8'))
+
 if __name__ == '__main__':
     socketio.start_background_task(target=read_serial)
     socketio.run(app, host='0.0.0.0', port=5000)
