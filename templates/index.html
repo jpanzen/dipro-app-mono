@@ -48,11 +48,11 @@
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
-                    <div id="current-values">
-                        <p>Uin: <span id="uin-value">-</span> V</p>
-                        <p>Uout: <span id="uout-value">-</span> V</p>
-                        <p>Proud 1: <span id="proud1-value">-</span> A</p>
-                        <p>Proud 2: <span id="proud2-value">-</span> A</p>
+                    <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
+                        <p class="text-[#4BC0C0]">Uin: <span id="uin-value">-</span> V</p>
+                        <p class="text-[#C04B4B]">Uout: <span id="uout-value">-</span> V</p>
+                        <p class="text-[#4B4BC0]">Iout: <span id="proud1-value">-</span> mA</p>
+                        <p class="text-[#C0C04B]">Iin: <span id="proud2-value">-</span> mA</p>
                         <p>Závity: <span id="coil">200</span></p>
                         <p>Zátěž: <span id="load">R0</span></p>
                     </div>
@@ -63,10 +63,10 @@
                             <button onclick="setState(3)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">600z</button>
                         </div>
                         <div class="flex flex-row gap-0">
-                            <button onclick="setState(4)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">R0</button>
-                            <button onclick="setState(5)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R1</button>
-                            <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2</button>
-                            <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3</button>
+                            <button onclick="setState(4)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">R0 (Na prázdno)</button>
+                            <button onclick="setState(5)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R1 (400)</button>
+                            <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2 (580)</button>
+                            <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3 (237)</button>
                         </div>
                         <div class="flex flex-row gap-0">
                             <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
@@ -197,10 +197,10 @@ function setState(state) {
         case 1:document.getElementById("coil").textContent="200";break;
         case 2:document.getElementById("coil").textContent="400";break;
         case 3:document.getElementById("coil").textContent="600";break;
-        case 4:document.getElementById("load").textContent="R0";break;
-        case 5:document.getElementById("load").textContent="R1";break;
-        case 6:document.getElementById("load").textContent="R2";break;
-        case 7:document.getElementById("load").textContent="R3";break;
+        case 4:document.getElementById("load").textContent="Na prázdno";break;
+        case 5:document.getElementById("load").textContent="400";break;
+        case 6:document.getElementById("load").textContent="580";break;
+        case 7:document.getElementById("load").textContent="237";break;
         default: console.log("Necekany vstup pro zmenu dat");break;
     }
 }
