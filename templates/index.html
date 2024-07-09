@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSULab</title>
+    <!-- Importování knihoven socket.io, Chart.js a luxon pro práci s grafy a časem -->
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+    <!-- Importování CSS stylů -->
     <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
 </head>
 <body class="bg-dark text-white font-nunito text-[16px]">
 
     <!--NAVIGACE-->
     <nav class="flex flex-col md:flex-row justify-between items-center border-b border-white10 fixed bg-dark w-full z-50 py-4 px-[40px]">
+        <!-- Mobilní tlačítko pro zobrazení menu -->
         <div class="md:hidden flex self-end w-full justify-end">
             <button id="menu-button" class="text-gray focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -21,28 +24,33 @@
                 </svg>
             </button>
         </div>
+        <!-- Menu položky pro desktop -->
         <ul id="menu" class="hidden md:flex md:gap-5 text-gray md:items-center">
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#experiment"><li>Domů</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#experiment"><li>Experiment</li></a>
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#teorie"><li>Teorie</li></a>
         </ul>
+        <!-- Odkaz na dokumentaci -->
         <a class="hover:text-white hidden md:flex py-[2px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" target="_blank" href="https://github.com/jpanzen/dipro-app-mono/tree/Trafo">Dokumentace</a>
+        <!-- Menu položky pro mobil -->
         <ul id="mobile-menu" class="hidden flex flex-col items-start self-start gap-4 py-[20px] text-gray bg-dark md:hidden">
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#experiment"><li>Domů</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#experiment"><li>Experiment</li></a>
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#teorie"><li>Teorie</li></a>
             <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" target="_blank" href="https://github.com/jpanzen/dipro-app-mono/tree/Trafo">Dokumentace</a>
         </ul>
     </nav>
 
     <div class="pt-[100px] gap-[40px]">
-        <!--EXPERIMENT-->
+        <!-- Experimentální část -->
         <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="experiment">
             <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
                 <div class="flex flex-col gap-[10px]">
                     <h2 class="text-[24px]">Měření napětí na transformátoru</h2>
                 </div>
+                <!-- Graf pro zobrazení měření napětí -->
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
+                <!-- Zobrazení aktuálních hodnot -->
                 <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
                     <p class="text-[#4BC0C0]">Uin: <span id="uin-value">-</span> V</p>
                     <p class="text-[#C04B4B]">Uout: <span id="uout-value">-</span> V</p>
@@ -51,6 +59,7 @@
                     <p>Závity: <span id="coil">200</span></p>
                     <p>Zátěž: <span id="load">R0</span></p>
                 </div>
+                <!-- Ovládání zátěže a vinutí -->
                 <div class="flex flex-col gap-[20px]">
                     <div class="flex flex-row gap-0">
                         <button onclick="setState(1)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">200z</button>
@@ -63,6 +72,7 @@
                         <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2 (580)</button>
                         <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3 (237)</button>
                     </div>
+                    <!-- Tlačítka pro pauzu a pokračování -->
                     <div class="flex flex-row gap-0">
                         <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
                         <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
@@ -72,7 +82,25 @@
         </div>
     </div>
 
+    <div class="pt-[60px] gap-[40px]">
+        <!-- Teoretická část -->
+        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px] text-gray" id="teorie">
+            <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
+                <h2 class="text-[24px]">Teorie</h2>
+                <div class="gap-[20px] flex flex-col">
+                    <p>Experiment na monitorování transformátoru se zaměřuje na měření primárního a sekundárního napětí a proudu, aby se analyzovalo chování transformátoru a jeho efektivita při různých nastaveních. Transformátor je zařízení s dvěma cívkami, primární a sekundární, které umožňuje převod napětí mezi dvěma různými elektrickými obvody.</p>
+                    <h3 class="text-[18px]">Jak funguje transformátor?</h3>
+                    <p>Transformační poměr transformátoru je definován poměrem počtu závitů na primární a sekundární.</p>
+                    <p>Obecně platí že U<sub>p</sub>/U<sub>s</sub> = N<sub>p</sub>/N<sub>s</sub> = I<sub>s</sub>/I<sub>p</sub>, kde index <sub>p</sub> nebo <sub>s</sub> znamená primární či sekundární vinutí, potažmo si můžeme představit sekundární či primární stranu obvodu.</p>
+                    <h3 class="text-[18px]">Jaké veličiny můžeme sledovat?</h3>
+                    <p>1. Primární napětí a proud <br>2. Sekundární napětí a proud <br>3.Fázový posun <br>4. Změna veličin na sekundární straně obvodu v závilosti na zátěži</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
+// Inicializace grafu s nastavením
 const ctx = document.getElementById('light-sensor-chart').getContext('2d');
 const maxDataPoints = 50; // Maximální počet bodů v grafu
 let isPaused = false;
@@ -132,19 +160,23 @@ const myChart = new Chart(ctx, {
     }
 });
 
+// Připojení k socket serveru
 const socket = io('http://127.0.0.1:5000');
 
+// Akce po připojení k serveru
 socket.on('connect', function() {
     console.log('Connected to server');
 });
 
 let startTime = Date.now();
 
+// Příjem dat ze serveru
 socket.on('data', function(data) {
     if(!isPaused){
         const now = Date.now();
         const elapsedTime = (now - startTime) / 1000; // Čas v sekundách
 
+        // Přidání nových dat do grafu
         myChart.data.labels.push(now);
         myChart.data.datasets[0].data.push({x: now, y: data.Uin});
         myChart.data.datasets[1].data.push({x: now, y: data.Uout});
@@ -172,6 +204,7 @@ socket.on('data', function(data) {
     }
 });
 
+// Ovládání pauzy a pokračování
 document.getElementById('pause-btn').addEventListener('click', function() {
     isPaused = true;
     this.style.display = 'none';
@@ -184,9 +217,11 @@ document.getElementById('play-btn').addEventListener('click', function() {
     document.getElementById('pause-btn').style.display = 'inline';
 });
 
+// Nastavení číselného stavu pro Arduino
 function setState(state) {
     console.log('Sending state:', state);
     socket.emit('send_data', { data: state });
+    // Aktualizace hodnot na panelu s hodnotami
     switch (state) {
         case 1:document.getElementById("coil").textContent="200";break;
         case 2:document.getElementById("coil").textContent="400";break;
@@ -199,6 +234,7 @@ function setState(state) {
     }
 }
 
+// Akce po odpojení od serveru
 socket.on('disconnect', function() {
     console.log('Disconnected from server');
 });
