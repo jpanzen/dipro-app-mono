@@ -9,6 +9,23 @@
     <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
     <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+    <style>
+        .color-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* okraj kolečka */
+        }
+
+        .color-indicator::before {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body class="bg-dark text-white font-nunito text-[16px]">
 
@@ -23,16 +40,14 @@
         </div>
         <ul id="menu" class="hidden md:flex md:gap-5 text-gray md:items-center">
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#experimenty"><li>Experimenty</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#technologie"><li>Technologie</li></a>
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Jak to funguje?</li></a>
         </ul>
         <a class="hover:text-white hidden md:flex py-[2px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
         <ul id="mobile-menu" class="hidden flex flex-col items-start self-start gap-4 py-[20px] text-gray bg-dark md:hidden">
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#experimenty"><li>Experimenty</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#technologie"><li>Technologie</li></a>
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Jak to funguje?</li></a>
             <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
         </ul>
     </nav>
@@ -42,32 +57,38 @@
         <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="about-me">
             <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
                 <div class="flex flex-col gap-[10px]">
-                    <h2 class="text-[24px]">Měření napětí na transformátoru</h2>
-                    <p>Stručný popis experimentu</p>
+                    <h2 class="text-[24px]">Měření napětí na foto-součástkách</h2>
                 </div>
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
                     <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
-                        <p class="text-[#4BC0C0]">Uin: <span id="uin-value">-</span> V</p>
-                        <p class="text-[#C04B4B]">Uout: <span id="uout-value">-</span> V</p>
-                        <p class="text-[#4B4BC0]">Iout: <span id="proud1-value">-</span> mA</p>
-                        <p class="text-[#C0C04B]">Iin: <span id="proud2-value">-</span> mA</p>
-                        <p>Závity: <span id="coil">200</span></p>
-                        <p>Zátěž: <span id="load">R0</span></p>
+                        <p class="text-[#4BC0C0]">U1 [mV]: <span id="u1-value">-</span> mV</p>
+                        <p class="text-[#C04B4B]">U2 [mV]: <span id="u2-value">-</span> mV</p>
+                        <p class="text-[#4B4BC0]">U3 [mV]: <span id="u3-value">-</span> mV</p>
+                        <div class="color-indicator"></div>
+                    </div>
+                    <!-- RGB Controls -->
+                    <div class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%] flex flex-col gap-[20px]" id="rgb-controls">
+                        <h2 class="text-[24px]">Nastavení RGB LED</h2>
+                        <div class="flex flex-col gap-[20px]">
+                            <div class="flex flex-row gap-[10px]">
+                                <label for="red-value">Červená:</label>
+                                <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px] no-spinners" type="number" id="red-value" min="0" max="255" value="0">
+                            </div>
+                            <div class="flex flex-row gap-[10px]">
+                                <label for="green-value">Zelená:</label>
+                                <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px]" type="number" id="green-value" min="0" max="255" value="0">
+                            </div>
+                            <div class="flex flex-row gap-[10px]">
+                                <label for="blue-value">Modrá:</label>
+                                <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px]" type="number" id="blue-value" min="0" max="255" value="0">
+                            </div>
+                        </div>
+                        <button id="set-rgb-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">Nastavit RGB</button>
                     </div>
                     <div class="flex flex-col gap-[20px]">
-                        <div class="flex flex-row gap-0">
-                            <button onclick="setState(1)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">200z</button>
-                            <button onclick="setState(2)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">400z</button>
-                            <button onclick="setState(3)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">600z</button>
-                        </div>
-                        <div class="flex flex-row gap-0">
-                            <button onclick="setState(4)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">R0 (Na prázdno)</button>
-                            <button onclick="setState(5)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R1 (400)</button>
-                            <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2 (580)</button>
-                            <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3 (237)</button>
-                        </div>
+                        
                         <div class="flex flex-row gap-0">
                             <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
                             <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
@@ -88,30 +109,23 @@ const myChart = new Chart(ctx, {
     data: {
         labels: [],
         datasets: [{
-            label: 'Uin [V]',
+            label: 'U1 [mV]',
             data: [],
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
             pointRadius: 0,
             cubicInterpolationMode: 'monotone',
         }, {
-            label: 'Uout [V]',
+            label: 'U2 [mV]',
             data: [],
             borderColor: 'rgba(192, 75, 75, 1)',
             borderWidth: 1,
             pointRadius: 0,
             cubicInterpolationMode: 'monotone'
         }, {
-            label: 'Proud 1 [A]',
+            label: 'U3 [mV]',
             data: [],
             borderColor: 'rgba(75, 75, 192, 1)',
-            borderWidth: 1,
-            pointRadius: 0,
-            cubicInterpolationMode: 'monotone'
-        }, {
-            label: 'Proud 2 [A]',
-            data: [],
-            borderColor: 'rgba(192, 192, 75, 1)',
             borderWidth: 1,
             pointRadius: 0,
             cubicInterpolationMode: 'monotone'
@@ -152,10 +166,9 @@ socket.on('data', function(data) {
         const elapsedTime = (now - startTime) / 1000; // Čas v sekundách
 
         myChart.data.labels.push(now);
-        myChart.data.datasets[0].data.push({x: now, y: data.Uin});
-        myChart.data.datasets[1].data.push({x: now, y: data.Uout});
-        myChart.data.datasets[2].data.push({x: now, y: data.proud1});
-        myChart.data.datasets[3].data.push({x: now, y: data.proud2});
+        myChart.data.datasets[0].data.push({x: now, y: data[0]});
+        myChart.data.datasets[1].data.push({x: now, y: data[1]});
+        myChart.data.datasets[2].data.push({x: now, y: data[2]});
 
         // Omezení počtu bodů v grafu
         if (myChart.data.labels.length > maxDataPoints) {
@@ -171,10 +184,9 @@ socket.on('data', function(data) {
         myChart.update();
 
         // Aktualizace aktuálních hodnot
-        document.getElementById('uin-value').textContent = data.Uin.toFixed(2);
-        document.getElementById('uout-value').textContent = data.Uout.toFixed(2);
-        document.getElementById('proud1-value').textContent = data.proud1.toFixed(2);
-        document.getElementById('proud2-value').textContent = data.proud2.toFixed(2);
+        document.getElementById('u1-value').textContent = data[0];
+        document.getElementById('u2-value').textContent = data[1];
+        document.getElementById('u3-value').textContent = data[2];
     }
 });
 
@@ -190,19 +202,22 @@ document.getElementById('play-btn').addEventListener('click', function() {
     document.getElementById('pause-btn').style.display = 'inline';
 });
 
-function setState(state) {
-    console.log('Sending state:', state);
-    socket.emit('send_data', { data: state });
-    switch (state) {
-        case 1:document.getElementById("coil").textContent="200";break;
-        case 2:document.getElementById("coil").textContent="400";break;
-        case 3:document.getElementById("coil").textContent="600";break;
-        case 4:document.getElementById("load").textContent="Na prázdno";break;
-        case 5:document.getElementById("load").textContent="400";break;
-        case 6:document.getElementById("load").textContent="580";break;
-        case 7:document.getElementById("load").textContent="237";break;
-        default: console.log("Necekany vstup pro zmenu dat");break;
+document.getElementById('set-rgb-btn').addEventListener('click', function() {
+    const r = document.getElementById('red-value').value;
+    const g = document.getElementById('green-value').value;
+    const b = document.getElementById('blue-value').value;
+    setRGB(r, g, b);
+});
+
+function updateColorIndicator(r, g, b) {
+        const colorIndicator = document.querySelector('.color-indicator');
+        colorIndicator.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
     }
+
+function setRGB(r, g, b) {
+    console.log('Setting RGB values:', {r, g, b});
+    socket.emit('set_rgb', { r, g, b });
+    updateColorIndicator(r, g, b);
 }
 
 socket.on('disconnect', function() {

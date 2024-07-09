@@ -7,7 +7,7 @@ app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-ser = serial.Serial(port='COM6', baudrate=19200, timeout=1)
+ser = serial.Serial(port='COM4', baudrate=9600, timeout=1)
 
 @app.route("/")
 def index():
@@ -27,21 +27,32 @@ def read_serial():
 
 def parse_data(data):
     try:
-        pairs = data.split(',')
-        values = {}
-        for pair in pairs:
-            key, value = pair.split(':')
-            values[key.strip()] = float(value.strip())
+        values = data.split(',')
         return values
     except (ValueError, IndexError):
         print(f"Error parsing data: {data}")
         return None
 
-@socketio.on('send_data')
-def handle_send_data(json):
-    data = json.get('data')
-    if data:
-        ser.write(f"{data}\n".encode('utf-8'))
+# Obsluha přijatých dat přes SocketIO
+@socketio.on('set_rgb')
+def handle_set_rgb(data):
+    r = data.get('r')
+    g = data.get('g')
+    b = data.get('b')
+
+    print(f'Setting RGB values: R={r}, G={g}, B={b}')  # Debug výpis
+    
+    if r is not None:
+        ser.write(f"r{r}\n".encode('utf-8'))
+        print(f"r{r}\n".encode('utf-8'))
+    
+    if g is not None:
+        ser.write(f"g{g}\n".encode('utf-8'))
+        print(f"g{g}\n".encode('utf-8'))
+    
+    if b is not None:
+        ser.write(f"b{b}\n".encode('utf-8'))
+        print(f"b{b}\n".encode('utf-8'))
 
 if __name__ == '__main__':
     socketio.start_background_task(target=read_serial)
