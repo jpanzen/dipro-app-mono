@@ -41,13 +41,13 @@
         <ul id="menu" class="hidden md:flex md:gap-5 text-gray md:items-center">
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Jak to funguje?</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Teorie</li></a>
         </ul>
         <a class="hover:text-white hidden md:flex py-[2px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
         <ul id="mobile-menu" class="hidden flex flex-col items-start self-start gap-4 py-[20px] text-gray bg-dark md:hidden">
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
             <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Jak to funguje?</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Teorie</li></a>
             <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
         </ul>
     </nav>
@@ -62,39 +62,38 @@
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
-                    <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
-                        <p class="text-[#4BC0C0]">U1 [mV]: <span id="u1-value">-</span> mV</p>
-                        <p class="text-[#C04B4B]">U2 [mV]: <span id="u2-value">-</span> mV</p>
-                        <p class="text-[#4B4BC0]">U3 [mV]: <span id="u3-value">-</span> mV</p>
-                        <div class="color-indicator"></div>
-                    </div>
-                    <!-- RGB Controls -->
-                    <div class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%] flex flex-col gap-[20px]" id="rgb-controls">
-                        <h2 class="text-[24px]">Nastavení RGB LED</h2>
-                        <div class="flex flex-col gap-[20px]">
-                            <div class="flex flex-row gap-[10px]">
-                                <label for="red-value">Červená:</label>
-                                <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px] no-spinners" type="number" id="red-value" min="0" max="255" value="0">
-                            </div>
-                            <div class="flex flex-row gap-[10px]">
-                                <label for="green-value">Zelená:</label>
-                                <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px]" type="number" id="green-value" min="0" max="255" value="0">
-                            </div>
-                            <div class="flex flex-row gap-[10px]">
-                                <label for="blue-value">Modrá:</label>
-                                <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px]" type="number" id="blue-value" min="0" max="255" value="0">
-                            </div>
-                        </div>
-                        <button id="set-rgb-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">Nastavit RGB</button>
-                    </div>
+                <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
+                    <p class="text-[#4BC0C0]">U1 [mV]: <span id="u1-value">-</span> mV</p>
+                    <p class="text-[#C04B4B]">U2 [mV]: <span id="u2-value">-</span> mV</p>
+                    <p class="text-[#4B4BC0]">U3 [mV]: <span id="u3-value">-</span> mV</p>
+                    <div class="color-indicator"></div>
+                </div>
+                <!-- RGB Controls -->
+                <div class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%] flex flex-col gap-[20px]" id="rgb-controls">
+                    <h2 class="text-[24px]">Nastavení RGB LED</h2>
                     <div class="flex flex-col gap-[20px]">
-                        
-                        <div class="flex flex-row gap-0">
-                            <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
-                            <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
+                        <div class="flex flex-row gap-[10px]">
+                            <label for="red-value">Červená:</label>
+                            <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px] no-spinners" type="number" id="red-value" min="0" max="255" value="0">
+                        </div>
+                        <div class="flex flex-row gap-[10px]">
+                            <label for="green-value">Zelená:</label>
+                            <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px]" type="number" id="green-value" min="0" max="255" value="0">
+                        </div>
+                        <div class="flex flex-row gap-[10px]">
+                            <label for="blue-value">Modrá:</label>
+                            <input class="bg-dark border-[1px] border-white10 rounded-[6px] px-[10px]" type="number" id="blue-value" min="0" max="255" value="0">
                         </div>
                     </div>
-                <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/svetelne-cidlo">O experimentu</a>
+                    <button id="set-rgb-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">Nastavit RGB</button>
+                </div>
+                <div class="flex flex-col gap-[20px]">
+                    
+                    <div class="flex flex-row gap-0">
+                        <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
+                        <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
