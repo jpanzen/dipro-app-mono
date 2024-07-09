@@ -45,31 +45,31 @@
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
-                    <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
-                        <p class="text-[#4BC0C0]">Uin: <span id="uin-value">-</span> V</p>
-                        <p class="text-[#C04B4B]">Uout: <span id="uout-value">-</span> V</p>
-                        <p class="text-[#4B4BC0]">Iout: <span id="proud1-value">-</span> mA</p>
-                        <p class="text-[#C0C04B]">Iin: <span id="proud2-value">-</span> mA</p>
-                        <p>Závity: <span id="coil">200</span></p>
-                        <p>Zátěž: <span id="load">R0</span></p>
+                <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
+                    <p class="text-[#4BC0C0]">Uin: <span id="uin-value">-</span> V</p>
+                    <p class="text-[#C04B4B]">Uout: <span id="uout-value">-</span> V</p>
+                    <p class="text-[#4B4BC0]">Iout: <span id="proud1-value">-</span> mA</p>
+                    <p class="text-[#C0C04B]">Iin: <span id="proud2-value">-</span> mA</p>
+                    <p>Závity: <span id="coil">200</span></p>
+                    <p>Zátěž: <span id="load">R0</span></p>
+                </div>
+                <div class="flex flex-col gap-[20px]">
+                    <div class="flex flex-row gap-0">
+                        <button onclick="setState(1)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">200z</button>
+                        <button onclick="setState(2)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">400z</button>
+                        <button onclick="setState(3)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">600z</button>
                     </div>
-                    <div class="flex flex-col gap-[20px]">
-                        <div class="flex flex-row gap-0">
-                            <button onclick="setState(1)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">200z</button>
-                            <button onclick="setState(2)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">400z</button>
-                            <button onclick="setState(3)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">600z</button>
-                        </div>
-                        <div class="flex flex-row gap-0">
-                            <button onclick="setState(4)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">R0 (Na prázdno)</button>
-                            <button onclick="setState(5)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R1 (400)</button>
-                            <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2 (580)</button>
-                            <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3 (237)</button>
-                        </div>
-                        <div class="flex flex-row gap-0">
-                            <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
-                            <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
-                        </div>
+                    <div class="flex flex-row gap-0">
+                        <button onclick="setState(4)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pl-[20px] pr-[10px] border-[1px] border-white10 rounded-l-[12px]">R0 (Na prázdno)</button>
+                        <button onclick="setState(5)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R1 (400)</button>
+                        <button onclick="setState(6)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[10px] border-[1px] border-white10">R2 (580)</button>
+                        <button onclick="setState(7)" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] pr-[20px] pl-[10px] border-[1px] border-white10 rounded-r-[12px]">R3 (237)</button>
                     </div>
+                    <div class="flex flex-row gap-0">
+                        <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
+                        <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
