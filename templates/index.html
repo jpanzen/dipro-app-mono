@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSULab</title>
+    <!-- Importování knihoven socket.io, Chart.js a luxon pro práci s grafy a časem -->
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0/build/global/luxon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+    <!-- Importování CSS stylů -->
     <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
     <style>
         .color-indicator {
@@ -27,10 +29,11 @@
         }
     </style>
 </head>
-<body class="bg-dark text-white font-nunito text-[16px]">
+<body class="bg-dark text-white font-nunito text-[16px] scroll-smooth">
 
     <!--NAVIGACE-->
     <nav class="flex flex-col md:flex-row justify-between items-center border-b border-white10 fixed bg-dark w-full z-50 py-4 px-[40px]">
+        <!-- Mobilní tlačítko pro zobrazení menu -->
         <div class="md:hidden flex self-end w-full justify-end">
             <button id="menu-button" class="text-gray focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -38,37 +41,40 @@
                 </svg>
             </button>
         </div>
+        <!-- Menu položky pro desktop -->
         <ul id="menu" class="hidden md:flex md:gap-5 text-gray md:items-center">
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Teorie</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#teorie"><li>Teorie</li></a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#experiment"><li>Experiment</li></a>
         </ul>
-        <a class="hover:text-white hidden md:flex py-[2px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
+        <!-- Odkaz na dokumentaci -->
+        <a class="hover:text-white hidden md:flex py-[2px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" target="_blank" href="https://github.com/jpanzen/dipro-app-mono/tree/svetelne-prvky">Dokumentace</a>
+        <!-- Menu položky pro mobil -->
         <ul id="mobile-menu" class="hidden flex flex-col items-start self-start gap-4 py-[20px] text-gray bg-dark md:hidden">
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/"><li>Domů</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#zapojení"><li>Jak to funguje?</li></a>
-            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="/#teorie"><li>Teorie</li></a>
-            <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" href="/dokumentace">Dokumentace</a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#teorie"><li>Teorie</li></a>
+            <a class="hover:text-white py-[2px] mt-[20px] px-[20px] bg-dark border-[1px] border-white10 rounded-[12px] items-center md:text-[16px] w-fit text-gray transition duration-150 ease-in-out hover:bg-white10" target="_blank" href="https://github.com/jpanzen/dipro-app-mono/tree/svetelne-prvky">Dokumentace</a>
+            <a class="hover:text-white hover:bg-white10 transition-all ease-in-out py-[2px] px-[12px] rounded-[6px]" href="#experiment"><li>Experiment</li></a>
         </ul>
     </nav>
 
     <div class="pt-[100px] gap-[40px]">
-        <!--EXPERIMENT-->
-        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="about-me">
+        <!-- Experimentální část -->
+        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px]" id="experiment">
             <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
                 <div class="flex flex-col gap-[10px]">
                     <h2 class="text-[24px]">Měření napětí na foto-součástkách</h2>
                 </div>
+                <!-- Graf pro zobrazení měření napětí -->
                 <div style="height: 400px; width: 100%;">
                     <canvas id="light-sensor-chart" width="400" height="200"></canvas>
                 </div>
+                <!-- Zobrazení aktuálních hodnot -->
                 <div id="current-values" class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%]">
                     <p class="text-[#4BC0C0]">U1 [mV]: <span id="u1-value">-</span> mV</p>
                     <p class="text-[#C04B4B]">U2 [mV]: <span id="u2-value">-</span> mV</p>
                     <p class="text-[#4B4BC0]">U3 [mV]: <span id="u3-value">-</span> mV</p>
                     <div class="color-indicator"></div>
                 </div>
-                <!-- RGB Controls -->
+                <!-- Ovládání RGB LED -->
                 <div class="border-[1px] border-white10 rounded-[12px] p-[20px] text-gray w-[100%] flex flex-col gap-[20px]" id="rgb-controls">
                     <h2 class="text-[24px]">Nastavení RGB LED</h2>
                     <div class="flex flex-col gap-[20px]">
@@ -87,8 +93,8 @@
                     </div>
                     <button id="set-rgb-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">Nastavit RGB</button>
                 </div>
+                <!-- Tlačítka pro pauzu a pokračování -->
                 <div class="flex flex-col gap-[20px]">
-                    
                     <div class="flex flex-row gap-0">
                         <button id="pause-btn" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PAUSE</button>
                         <button id="play-btn" style="display: none;" class="text-gray hover:text-white hover:bg-white10 transition duration-150 ease-in-out py-[2px] px-[20px] border-[1px] border-white10 rounded-[12px]">PLAY</button>
@@ -98,7 +104,21 @@
         </div>
     </div>
 
+    <div class="pt-[60px] gap-[40px]">
+        <!-- Teoretická část -->
+        <div class="flex flex-col pb-[40px] px-[20px] md:px-[40px] items-center scroll-m-[40px] text-gray" id="teorie">
+            <div class="flex flex-col p-[40px] gap-[40px] border-[1px] border-white10 rounded-[20px] w-[1000px] max-w-full items-start">
+                <h2 class="text-[24px]">Teorie</h2>
+                <p>Experiment s elektronickými součástkami reagujícími na světlo se zaměřuje na porovnání chování fotorezistorů a fotodiod za různých světelných podmínek. Fotorezistor je polovodičová součástka, jejíž odpor se mění v závislosti na intenzitě dopadajícího světla. Tento jev je využíván například v senzorech světla nebo pro automatické osvětlovací systémy.</p>
+                <p>Naopak fotodioda je navržena tak, aby přeměňovala světelnou energii přímo na elektrickou pomocí fotoelektrického jevu. Tento typ součástky se často používá jako světelný detektor, kde intenzita světla ovlivňuje velikost výstupního proudu.</p>
+                <p>V našem experimentu jsme zapojili oba typy součástek do obvodů, které umožňují měření změn jejich odporu či výstupního proudu v reakci na různé světelné podmínky. Fotorezistory jsme zapojili do napěťového děliče, kde změny odporu vedou ke změnám výstupního napětí. Tímto způsobem jsme mohli sledovat, jak starší a novější typy fotorezistorů reagují na světlo.</p>
+                <p>Součástí experimentu je i RGB dioda, kterou pomocí barevného modelu RGB můžeš ovládat a sledovat tak změnu chování součástek.</p>
+            </div>
+        </div>
+    </div>
+
 <script>
+// Inicializace grafu s nastavením
 const ctx = document.getElementById('light-sensor-chart').getContext('2d');
 const maxDataPoints = 50; // Maximální počet bodů v grafu
 let isPaused = false;
@@ -151,19 +171,23 @@ const myChart = new Chart(ctx, {
     }
 });
 
+// Připojení k socket serveru
 const socket = io('http://127.0.0.1:5000');
 
+// Akce po připojení k serveru
 socket.on('connect', function() {
     console.log('Connected to server');
 });
 
 let startTime = Date.now();
 
+// Příjem dat ze serveru
 socket.on('data', function(data) {
     if(!isPaused){
         const now = Date.now();
         const elapsedTime = (now - startTime) / 1000; // Čas v sekundách
 
+        // Přidání nových dat do grafu
         myChart.data.labels.push(now);
         myChart.data.datasets[0].data.push({x: now, y: data[0]});
         myChart.data.datasets[1].data.push({x: now, y: data[1]});
@@ -189,6 +213,7 @@ socket.on('data', function(data) {
     }
 });
 
+// Ovládání pauzy a pokračování
 document.getElementById('pause-btn').addEventListener('click', function() {
     isPaused = true;
     this.style.display = 'none';
@@ -201,6 +226,7 @@ document.getElementById('play-btn').addEventListener('click', function() {
     document.getElementById('pause-btn').style.display = 'inline';
 });
 
+// Nastavení RGB LED
 document.getElementById('set-rgb-btn').addEventListener('click', function() {
     const r = document.getElementById('red-value').value;
     const g = document.getElementById('green-value').value;
@@ -208,17 +234,20 @@ document.getElementById('set-rgb-btn').addEventListener('click', function() {
     setRGB(r, g, b);
 });
 
+// Aktualizace barvy indikátoru
 function updateColorIndicator(r, g, b) {
-        const colorIndicator = document.querySelector('.color-indicator');
-        colorIndicator.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-    }
+    const colorIndicator = document.querySelector('.color-indicator');
+    colorIndicator.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+}
 
+// Funkce pro nastavení RGB LED
 function setRGB(r, g, b) {
     console.log('Setting RGB values:', {r, g, b});
     socket.emit('set_rgb', { r, g, b });
     updateColorIndicator(r, g, b);
 }
 
+// Akce po odpojení od serveru
 socket.on('disconnect', function() {
     console.log('Disconnected from server');
 });
